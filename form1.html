@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My HTML5 Page</title>
+</head>
+<body>
+    <!-- Your content goes here -->
+    <h1>My HTML5 Page</h1>
+    <form>
+        <table>
+            <tr>
+                <td><label for="id_name">Name:</label></td>
+                <td><input type="text" id="id_name" name="name" autofocus size="40" maxlength="100" required></td>
+            </tr>
+            <tr>
+                <td><label for="id_password">Password:</label></td>
+                <td><input type="password" id="id_password" name="password" placeholder="Enter your password" size="40" required></td>
+            </tr>
+            <tr>
+                <td><label for="id_password2">Password again:</label></td>
+                <td><input type="password" id="id_password2" name="password2" placeholder="Enter your password" size="40" required></td>
+            </tr>
+            <tr>
+                <td><label for="id_message">Message:</label></td>
+                <td><textarea id="id_message" name="message" rows="5" cols="40"></textarea></td>
+            </tr>
+            <tr>
+                <td><label for="male">Gender:</label></td>
+                <td>
+                <fieldset><legend>gender</legend>
+                    <input type="radio" name="gender" value="m" id="male"> <label for="male">male</label>
+                    <input type="radio" name="gender" value="f" id="female"><label for="female"> female</label>
+                    <label for="other"><input type="radio" name="gender" value="o" id="other"> other</label>
+                </fieldset>
+                </td>   
+            </tr>
+            <tr>
+                <td><label for="id_hobbies">Hobbies:</label>
+                    <td>
+                    <input type="checkbox" name="hobbies" value="football" id="id_hobbies" checked> <label for="id_hobbies">football</label>
+                    <input type="checkbox" name="hobbies" value="basketball" id="id_hobbies"> <label for="id_hobbies">basketball</label>
+                    <input type="checkbox" name="hobbies" value="tennis" id="id_hobbies"> <label for="id_hobbies">tennis</label>  
+                    </td>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="id_age">Age:</label></td>
+                <td><input type="number" id="id_age" name="age" min="0" max="150"></td>
+            </tr>
+            <tr>
+                <td><label for="id_color">Favorite color:</label></td>
+                <td>
+                    <select id="id_color" name="color">
+                        <optgroup label="primary colors">
+                        <option value="red">punainen</option>
+                        <option value="green">vihreä</option>
+                        <option value="blue" selected>sininen</option>
+                    </optgroup>
+                    <optgroup label="secondary colors">
+                        <option value="orange">orange</option>
+                        <option value="purple">purple</option>
+                        <option value="green">green</option>
+                    </optgroup>
+                    <optgroup label="black and white">
+                        <option value="black">black</option>
+                        <option value="white">white</option>
+                    </optgroup>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="id_price">Price:</label></td>
+                <td><input type="range" id="id_price" min="0" max="1000" value="500"
+                    step=10 oninput="id_price_output.value = this.value">
+                    <input type="number" id="id_price_output" value="500" min="0"
+                    max="1000" step="10" oninput="id_price.value = this.value"> 
+                </td>
+            </tr>
+            <tr>
+                <td><label for="profession">Profession:</label></td>
+                <td><input list="professions" id="profession" size="40">
+                    <datalist id="professions">  
+                        <option value="nurse">
+                        <option value="teacher">
+                        <option value="plumber">
+                        <option value="bureaucrat">
+                    </datalist>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="Send" onclick="processForm(event)"></td>
+            </tr>
+            <tr>
+                <td><label for="id_output">Form info:</label></td>
+                <td><output id="id_output"></output></td>
+            </tr>
+        </table>
+    </form>
+    <script>
+        function processForm(event) {
+            let name = document.getElementById("id_name").value;
+            let password = document.getElementById("id_password").value;
+            let password2 = document.getElementById("id_password2").value;
+            let message = document.getElementById("id_message").value;
+            let hobbies = [];
+            for (let hobby of document.getElementsByName("hobbies")) {
+                if (hobby.checked) {
+                    hobbies.push(hobby.value);
+                }
+            }
+            let age = document.getElementById("id_age").value;
+            console.log(age);
+            if (age.length == 0 || isNaN(age)) {
+                alert("Age must be a number");
+            }
+            let colorSelectElem = document.getElementById("id_color");
+            let color = colorSelectElem.options[colorSelectElem.selectedIndex].value;
+
+            document.getElementById("id_output").innerText = `Name = ${name}` + " " + password + " "
+            + password2+ " " + `Hobbies= ${hobbies.join(", ")}` + " " + message+
+            " " + `Age = ${age}` + " " + `Color = ${color}`;
+            event.preventDefault();
+            return false;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My HTML5 Page</title>
+</head>
+<body>
+    <h1>TODO APP</h1>
+    <form action="" onsubmit="event.preventDefault()">
+        <input type="text" id="id_thing" size="40" />
+        <input type="button" id="id_button" value="Add" />
+        <br /><output id="result">
+            <ul id="id_todo_list"></ul>
+        </output>
+      </form>
+      <script>
+        let elem = document.getElementById("id_thing");
+        elem.addEventListener("keyup", function (event) {
+          if (event.keyCode === 13) {
+            // 13 = enter key
+            document.getElementById("id_button").click();
+          }
+        });
+        document.getElementById("id_button").onclick = function () {
+          let value = document.getElementById("id_thing").value;
+          document.getElementById("id_todo_list").innerHTML += `<li>${value}</li>\n`;
+        };
+      </script>    
+</body>
+</html>

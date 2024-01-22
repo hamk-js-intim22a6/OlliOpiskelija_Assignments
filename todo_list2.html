@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My HTML5 Page</title>
+    <style>
+        .error {
+            color: blue;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <h1>TODO APP</h1>
+    <form action="" onsubmit="event.preventDefault()">
+        <input type="text" id="id_thing" size="40">
+        <input type="button" id="id_button" value="Add">
+        <input type="button" id="id_empty" value="Empty">
+        <br /><output id="result">
+            <ul id="id_todo_list"></ul>
+        </output>
+      </form>
+      <script>
+        let elem = document.getElementById("id_thing");
+        elem.addEventListener("keyup", function (event) {
+          if (event.keyCode === 13) {
+            // 13 = enter key
+            document.getElementById("id_button").click();
+          }
+        });
+        document.getElementById("id_button").onclick = function () {
+            const todo_list = document.getElementById("id_todo_list");
+            const li = document.createElement("li");
+            const node = document.createTextNode(document.getElementById("id_thing").value);
+            li.appendChild(node);
+            li.className = "error";
+            //li.style.color = "red";
+            //li.style.fontSize = "30px";
+            todo_list.appendChild(li);          
+        };
+        document.getElementById("id_empty").
+        addEventListener("click", function (event) {
+            document.getElementById("id_todo_list").innerHTML = "";
+        }, false);        
+      </script>    
+</body>
+</html>

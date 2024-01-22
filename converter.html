@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My HTML5 Page</title>
+    <script src="conversion.js"></script>
+</head>
+<body>
+    <h1>Celsius - Fahrenheit Converter</h1>
+    <form>
+        <label for="id_celsius">Celsius:</label>
+        <input type="number" id="id_celsius" size="40" placeholder="Enter temperature in Celsius">
+        <br>
+        <label for="id_fahrenheit">Fahrenheit:</label>
+        <output id="id_fahrenheit"></output>
+        <br>        
+        <input type="button" id="id_button" value="Convert">
+    </form>
+    <script>
+        document.getElementById("id_button").onclick = function () {
+            const celsius = document.getElementById("id_celsius").value;
+            if (celsius.length === 0 || isNaN(celsius)) {
+                //alert("Please enter a number");
+                return;
+            }
+            const fahrenheit = celsiusToFahrenheit(celsius);
+            document.getElementById("id_fahrenheit").value = fahrenheit;
+        };
+    </script>   
+</body>
+</html>

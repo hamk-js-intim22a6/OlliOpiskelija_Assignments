@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My HTML5 Page</title>
+</head>
+<body>
+    <!-- Your content goes here -->
+    <form action="" onsubmit="event.preventDefault()">
+        <input type="search" id="id_search" size="40" />
+        <input type="button" id="id_button" value="Search" />
+        <br /><output id="result"></output>
+      </form>
+      <script>
+        let elem = document.getElementById("id_search");
+        elem.addEventListener("keyup", function (event) {
+          if (event.keyCode === 13) {
+            // 13 = enter key
+            document.getElementById("id_button").click();
+          }
+        });
+        document.getElementById("id_button").onclick = function () {
+          let value = document.getElementById("id_search").value;
+          document.getElementById("result").innerText += `${value}\n`;
+        };
+      </script>    
+</body>
+</html>
