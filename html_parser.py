@@ -7,6 +7,7 @@ class LinkParser(HTMLParser):
         super().__init__()
         self.links = []
 
+    # <a href="osoite">...</a>
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
             for attr in attrs:
@@ -21,11 +22,9 @@ def get_links(url):
             
             # Parse the HTML and extract the links
             parser = LinkParser()
-            parser.feed(html)
-            links = parser.links
-            
+            parser.feed(html)            
             # Return the list of links
-            return links
+            return parser.links
     except urllib.error.URLError as e:
         print(f"Error accessing URL: {e.reason}")
         return []
@@ -34,7 +33,13 @@ def get_links(url):
         return []
 
 # Example usage
-url = 'https://yle.fi/uutiset/osasto/news'
+#url = 'https://yle.fi/uutiset/osasto/news'
+url = "https://www.iltalehti.fi/urheilu"
 links = get_links(url)
 for link in links:
-    print(link)
+    if link.startswith('http'):
+        print(link)
+    else:
+        print(f"https://www.iltalehti.fi/{link}")
+        #print(f"https://yle.fi{link}")
+
