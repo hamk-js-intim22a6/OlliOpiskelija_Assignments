@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Canvas Basics</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script>
+            var canvas, ctx, width, height;
+            function line(x1, y1, x2, y2) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();                
+            }
+            function func(x) {
+                return height/2+0.4*height*Math.sin(x*0.02)*x/800;
+            }            
+            function draw() {
+                canvas = document.getElementById("canvas");
+                ctx = canvas.getContext("2d");
+                width = canvas.height;
+                height = canvas.height;
+                let oldx = 0;
+                let oldy = height/2;
+                for (let x = 0; x < 1024; x++) {
+                    let y = func(x);
+                    line(oldx, oldy, x, y);
+                    oldx = x;
+                    oldy = y;
+                }
+            }
+        </script>
+    </head>
+    <body onload="draw()">
+    <canvas id="canvas" width="1024" height="768"></canvas>
+    </body>
+</html>

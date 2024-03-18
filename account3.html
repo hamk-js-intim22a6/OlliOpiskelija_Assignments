@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Optimized Page</title>
+</head>
+<body>
+    <h1>OOP Example</h1>
+    <script>
+    // ES6-tyyli (suositeltu)
+    class Account {
+        constructor (balance) {
+            this.balance = balance;
+        }
+        deposit (amount) {
+            this.balance += amount;
+        }
+        draw (amount) {
+            this.balance -= amount;
+        }
+    }
+    let jacksAccount = new Account(100);
+    jacksAccount.deposit(50);
+    console.log(jacksAccount.balance);
+    jacksAccount.draw(90);
+    console.log(jacksAccount.balance);
+    </script>
+</body>
+</html>

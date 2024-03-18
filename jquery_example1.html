@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>jQuery Example</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+        $(function() {
+            $("#dynamic").html("<h1>Hello World<\/h1>");
+        });
+        /* function withoutJQuery() {
+            document.getElementById("dynamic").innerHTML = "<h1>Hello World<\/h1>";
+        }
+        window.onload = withoutJQuery;*/
+        $(document).ready(function() {
+            $(".hideme").click(function() {
+                $(this).hide(2000);
+            });
+        });
+        $(function() {
+            // Short form of Document Ready
+        });  
+        </script>
+    </head>
+    <body>
+        <div id="dynamic" class="hideme"></div>
+    </body>
+</html>

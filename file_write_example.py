@@ -1,0 +1,7 @@
+f = open("testi.txt", "w")
+f.write("Hei tämä on esimerkki\n")
+x = input("Kirjoita jotain: ")
+f.flush()
+f.write("Tämä on toinen rivi\n")
+x = input("Kirjoita jotain #2: ")
+f.close()

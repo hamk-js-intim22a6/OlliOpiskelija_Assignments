@@ -1,0 +1,44 @@
+[
+  {
+    "question": "What is the capital of France?",
+    "choices": [
+      {
+        "text": "London",
+        "value": 0
+      },
+      {
+        "text": "Paris",
+        "value": 1
+      },
+      {
+        "text": "New York",
+        "value": 0
+      },
+      {
+        "text": "Berlin",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "question": "What is the capital of Finland?",
+    "choices": [
+      {
+        "text": "Helsinki",
+        "value": 1
+      },
+      {
+        "text": "Stockholm",
+        "value": 0
+      },
+      {
+        "text": "Oslo",
+        "value": 0
+      },
+      {
+        "text": "Copenhagen",
+        "value": 0
+      }
+    ]
+  }
+]

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake Game</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  canvas {
+    background-color: #000;
+  }
+</style>
+<script>
+  window.onload = function() {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    document.body.appendChild(canvas);
+    canvas.width = 400;
+    canvas.height = 400;
+
+    let snake = [{x: 200, y: 200}];
+    let apple = {x: 300, y: 300};
+    let dx = 10;
+    let dy = 0;
+    let changingDirection = false;
+
+    document.addEventListener("keydown", changeDirection);
+
+    main();
+    createApple();
+
+    function main() {
+      if (gameOver()) return;
+      changingDirection = false;
+      setTimeout(function onTick() {
+        clearCanvas();
+        drawApple();
+        moveSnake();
+        drawSnake();
+        main();
+      }, 100);
+    }
+
+    function clearCanvas() {
+      context.fillStyle = 'black';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawSnake() {
+      snake.forEach(function(snakePart) {
+        context.fillStyle = 'lightgreen';
+        context.strokeStyle = 'darkgreen';
+        context.fillRect(snakePart.x, snakePart.y, 10, 10);
+        context.strokeRect(snakePart.x, snakePart.y, 10, 10);
+      });
+    }
+
+    function moveSnake() {
+      const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+      snake.unshift(head);
+      const hasEatenApple = snake[0].x === apple.x && snake[0].y === apple.y;
+      if (hasEatenApple) {
+        createApple();
+      } else {
+        snake.pop();
+      }
+    }
+
+    function changeDirection(event) {
+      const LEFT_KEY = 37;
+      const RIGHT_KEY = 39;
+      const UP_KEY = 38;
+      const DOWN_KEY = 40;
+      const WASD_KEYS = {65: -10, 68: 10, 87: -10, 83: 10}; // WASD keys with their movement values
+      const keyPressed = event.keyCode;
+      const goingUp = dy === -10;
+      const goingDown = dy === 10;
+      const goingRight = dx === 10;
+      const goingLeft = dx === -10;
+
+      if (changingDirection) return;
+
+      changingDirection = true;
+
+      if (keyPressed === LEFT_KEY && !goingRight) {
+        dx = -10;
+        dy = 0;
+      }
+
+      if (keyPressed === UP_KEY && !goingDown) {
+        dx = 0;
+        dy = -10;
+      }
+
+      if (keyPressed === RIGHT_KEY && !goingLeft) {
+        dx = 10;
+        dy = 0;
+      }
+
+      if (keyPressed === DOWN_KEY && !goingUp) {
+        dx = 0;
+        dy = 10;
+      }
+
+      // WASD support
+      if (WASD_KEYS[keyPressed] && !goingUp && !goingDown) {
+        dx = keyPressed === 65 ? -10 : keyPressed === 68 ? 10 : dx;
+        dy = 0;
+      }
+      if (WASD_KEYS[keyPressed] && !goingLeft && !goingRight) {
+        dy = keyPressed === 87 ? -10 : keyPressed === 83 ? 10 : dy;
+        dx = 0;
+      }
+    }
+
+    function randomTen(min, max) {
+      return Math.round((Math.random() * (max-min) + min) / 10) * 10;
+    }
+
+    function createApple() {
+      apple.x = randomTen(0, canvas.width - 10);
+      apple.y = randomTen(0, canvas.height - 10);
+      snake.forEach(function(part) {
+        const appleIsOnSnake = part.x == apple.x && part.y == apple.y;
+        if (appleIsOnSnake) createApple();
+      });
+    }
+
+    function drawApple() {
+      context.fillStyle = 'red';
+      context.fillRect(apple.x, apple.y, 10, 10);
+    }
+
+    function gameOver() {
+      for (let i = 4; i < snake.length; i++) {
+        const collision = snake[i].x === snake[0].x && snake[i].y === snake[0].y;
+        if (collision) return true;
+      }
+      const hitLeftWall = snake[0].x < 0;
+      const hitRightWall = snake[0].x > canvas.width - 10;
+      const hitToptWall = snake[0].y < 0;
+      const hitBottomWall = snake[0].y > canvas.height - 10;
+      return hitLeftWall || hitRightWall || hitToptWall || hitBottomWall;
+    }
+  }
+</script>
+</head>
+<body>
+</body>
+</html>

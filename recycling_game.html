@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recycling Game</title>
+<style>
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+  .bin { border: 2px solid #000; margin: 10px; padding: 20px; width: 140px; text-align: center; cursor: pointer; }
+  .object { margin: 5px; padding: 10px; background-color: #f0f0f0; cursor: grab; }
+  .footer { margin-top: 20px; }
+  @media (max-width: 600px) { .bins, .objects { flex-direction: column; } }
+</style>
+</head>
+<body>
+<h2>Recycle Right Game</h2>
+<div id="objects" class="objects"></div>
+<div id="bins" class="bins" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+<div class="footer">
+  <button onclick="startGame()">Start</button> <span id="score">Score: 0</span>
+</div>
+
+<script>
+const bins = ["Organic Waste", "Paper", "Glass", "Metal", "Plastic", "Electronic Waste", "Miscellaneous"];
+const objects = [
+  {name: "Banana Peel", bin: "Organic Waste"},
+  {name: "Newspaper", bin: "Paper"},
+  {name: "Bottle", bin: "Glass"},
+  {name: "Can", bin: "Metal"},
+  {name: "Water Bottle", bin: "Plastic"},
+  {name: "Old Phone", bin: "Electronic Waste"},
+  {name: "Pizza Box", bin: "Paper"},
+  // Add more objects according to the pattern
+];
+let score = 0;
+
+function startGame() {
+  document.getElementById('objects').innerHTML = '';
+  document.getElementById('bins').innerHTML = '';
+  score = 0;
+  updateScore(0);
+
+  bins.forEach(bin => {
+    const binElement = document.createElement('div');
+    binElement.innerText = bin;
+    binElement.className = 'bin';
+    binElement.ondrop = drop;
+    binElement.ondragover = allowDrop;
+    document.getElementById('bins').appendChild(binElement);
+  });
+
+  const shuffled = objects.sort(() => 0.5 - Math.random()).slice(0, 10);
+  shuffled.forEach(obj => {
+    const objectElement = document.createElement('div');
+    objectElement.innerText = obj.name;
+    objectElement.className = 'object';
+    objectElement.draggable = true;
+    objectElement.ondragstart = drag;
+    objectElement.dataset.bin = obj.bin;
+    document.getElementById('objects').appendChild(objectElement);
+  });
+}
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.dataset.bin + '|' + ev.target.innerText);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text").split('|');
+  if (ev.target.innerText === data[0]) {
+    updateScore(1);
+    ev.target.appendChild(document.createTextNode(` ${data[1]}`));
+  }
+}
+
+function updateScore(points) {
+  score += points;
+  document.getElementById('score').innerText = 'Score: ' + score;
+}
+</script>
+</body>
+</html>
+

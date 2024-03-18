@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form with Validation</title>
+    <style>
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <form id="myForm">
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" name="fullName" required autofocus placeholder="Enter your full name" size="60" maxlength="80"><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required pattern="[a-zA-Z0-9_.,\-:;?!]{8,20}"><br><br>
+
+        <label for="confirmPassword">Password again:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required pattern="[a-zA-Z0-9_.,\-:;?!]{8,20}"><br><br>
+
+        <label>Gender:</label>
+        <input type="radio" id="male" name="gender" value="male" required><label for="male">Male</label>
+        <input type="radio" id="female" name="gender" value="female"><label for="female">Female</label>
+        <input type="radio" id="other" name="gender" value="other"><label for="other">Other</label><br><br>
+
+        <label>Hobbies:</label>
+        <input type="checkbox" id="games" name="hobbies" value="games"><label for="games">Games</label>
+        <input type="checkbox" id="music" name="hobbies" value="music"><label for="music">Music</label>
+        <input type="checkbox" id="sports" name="hobbies" value="sports"><label for="sports">Sports</label>
+        <input type="checkbox" id="tv" name="hobbies" value="tv"><label for="tv">TV</label><br><br>
+
+        <label for="birthDate">Birth Date:</label>
+        <input type="date" id="birthDate" name="birthDate"><br><br>
+
+        <label for="heightRange">Height (cm):</label>
+        <input type="range" id="heightRange" name="height" min="40" max="300" oninput="heightNumber.value = heightRange.value">
+        <input type="number" id="heightNumber" name="heightNumber" min="40" max="300" oninput="heightRange.value = heightNumber.value"><br><br>
+
+        <label for="favoriteColor">Favorite Color:</label>
+        <input type="color" id="favoriteColor" name="favoriteColor"><br><br>
+
+        <label for="homeCountry">Home Country:</label>
+        <select id="homeCountry" name="homeCountry">
+            <option value="Finland" selected>Finland</option>
+            <option value="Russia">Russia</option>
+            <option value="Sweden">Sweden</option>
+            <option value="Norway">Norway</option>
+            <option value="Denmark">Denmark</option>
+            <option value="Iceland">Iceland</option>
+            <option value="Estonia">Estonia</option>
+            <option value="Latvia">Latvia</option>
+            <option value="Lithuania">Lithuania</option>
+        </select><br><br>
+
+        <label for="profession">Profession:</label>
+        <input list="professions" id="profession" name="profession">
+        <datalist id="professions">
+            <option value="Teacher">
+            <option value="Nurse">
+            <option value="Plumber">
+            <option value="Bureaucrat">
+        </datalist><br><br>
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required rows="6" cols="60" placeholder="Enter your message" maxlength="1000"></textarea><br><br>
+
+        <button type="button" onclick="submitForm()">Send</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+        function submitForm() {
+            let form = document.getElementById('myForm');
+            let output = document.getElementById('output');
+            let isValid = form.checkValidity();
+
+            if (isValid) {
+                let formData = new FormData(form);
+                let hobbies = formData.getAll('hobbies').join(", ");
+                let gender = formData.get('gender');
+                let data = {
+                    fullName: formData.get('fullName'),
+                    password: formData.get('password'),
+                    confirmPassword: formData.get('confirmPassword'),
+                    gender: gender,
+                    hobbies: hobbies,
+                    birthDate: formData.get('birthDate'),
+                    height: formData.get('height'),
+                    favoriteColor: formData.get('favoriteColor'),
+                    homeCountry: formData.get('homeCountry'),
+                    profession: formData.get('profession'),
+                    message: formData.get('message')
+                };
+
+                if (data.password !== data.confirmPassword) {
+                    output.innerHTML = "<p class='error'>Passwords do not match.</p>";
+                    return;
+                }
+
+                output.innerHTML = "<p>" + JSON.stringify(data, null, 2).replace(/,/g, ",<br>").replace(/{/g, "{<br>").replace(/}/g, "<br>}") + "</p>";
+            } else {
+                form.reportValidity();
+            }
+        }
+    </script>
+</body>
+</html>

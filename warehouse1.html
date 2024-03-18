@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse App</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box; }
+        button { padding: 10px 20px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Warehouse Management</h2>
+    <div class="form-group">
+        <label for="itemName">Item Name:</label>
+        <input type="text" id="itemName">
+    </div>
+    <div class="form-group">
+        <label for="itemPrice">Price:</label>
+        <input type="number" id="itemPrice" min="0">
+    </div>
+    <div class="form-group">
+        <label for="itemAmount">Amount:</label>
+        <input type="number" id="itemAmount" min="0">
+    </div>
+    <button onclick="addItem()">Add Item</button>
+    <button onclick="updateItem()">Update Amount</button>
+    <button onclick="removeItem()">Remove Item</button>
+
+    <h3>Warehouse Items</h3>
+    <table id="itemsTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Items will be added here -->
+        </tbody>
+    </table>
+
+    <script>
+        let items = [];
+
+        function addItem() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const itemPrice = parseFloat(document.getElementById('itemPrice').value);
+            const itemAmount = parseInt(document.getElementById('itemAmount').value, 10);
+
+            if (!itemName || isNaN(itemPrice) || isNaN(itemAmount) || itemPrice < 0 || itemAmount < 0) {
+                alert("Invalid input");
+                return;
+            }
+
+            const existingItem = items.find(item => item.name === itemName);
+            if (existingItem) {
+                alert("Item already exists");
+                return;
+            }
+
+            items.push({ name: itemName, price: itemPrice, amount: itemAmount });
+            items.sort((a, b) => a.name.localeCompare(b.name));
+            renderItems();
+        }
+
+        function updateItem() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const itemAmount = parseInt(document.getElementById('itemAmount').value, 10);
+
+            if (!itemName || isNaN(itemAmount) || itemAmount < 0) {
+                alert("Invalid input");
+                return;
+            }
+
+            const item = items.find(item => item.name === itemName);
+            if (!item) {
+                alert("Item not found");
+                return;
+            }
+
+            item.amount = itemAmount;
+            renderItems();
+        }
+
+        function removeItem() {
+            const itemName = document.getElementById('itemName').value.trim();
+
+            if (!itemName) {
+                alert("Please enter an item name");
+                return;
+            }
+
+            items = items.filter(item => item.name !== itemName);
+            renderItems();
+        }
+
+        function renderItems() {
+            const tableBody = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            items.forEach(item => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).innerText = item.name;
+                row.insertCell(1).innerText = item.price.toFixed(2);
+                row.insertCell(2).innerText = item.amount;
+            });
+        }
+    </script>
+</body>
+</html>

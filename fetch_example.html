@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // fetch API
+        fetch('file.txt').
+        then(response => response.text()).
+        then(data => console.log("then: ", data));
+        // fetch actually returns a promise!
+        const fetchPromise = fetch("file.txt");
+        fetchPromise.then(response => response.text()).
+        then(data => console.log("promise: ", data));
+        // with async and await
+        async function fetchText() {
+            let response = await fetch('file.txt');
+            let data = await response.text();
+            console.log("async:", data);
+        }
+        console.log("start");
+        fetchText();
+        console.log("end");
+        async function fetchText2() {
+            let response = await fetch('file.txt');
+            let data = await response.text();
+            console.log("Start 2");
+            console.log("async 2:", data);
+            console.log("End 2");
+        }
+        fetchText2();
+    </script>
+</body>
+</html>

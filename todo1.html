@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #input-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="input-container">
+        <input type="text" id="itemInput" placeholder="Enter item" />
+        <button id="addItem">Add Item</button>
+    </div>
+    <ul id="itemList"></ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('itemInput');
+            const button = document.getElementById('addItem');
+            const list = document.getElementById('itemList');
+
+            button.addEventListener('click', addItemToList);
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    addItemToList();
+                }
+            });
+
+            function addItemToList() {
+                const text = input.value.trim();
+                if (text) {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = text;
+                    list.appendChild(listItem);
+                    input.value = '';
+                } else {
+                    alert('Please enter some text.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

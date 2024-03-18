@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch API with JSON</title>
+</head>
+<body>
+    <script>
+        async function getJSON(url) {
+            let response = await fetch(url);
+            let questions = await response.json();
+            for (let question of questions) {
+                console.log(question.question);
+                for(let choice of question.choices) {
+                    console.log(choice.text, choice.value);
+                }
+            }
+        }
+        getJSON("questions.json");
+    </script>
+</body>
+</html>

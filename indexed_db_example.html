@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO App</title>
+    <style>
+        /* Add your custom styles here */
+    </style>
+</head>
+<body>
+    <h1>TODO App</h1>
+    <input type="text" id="todoInput" placeholder="Enter a new TODO item">
+    <button id="addButton">Add</button>
+    <ul id="todoList"></ul>
+
+    <script>
+        // Open IndexedDB database
+        const request = indexedDB.open('TODO_DB', 1);
+
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            const objectStore = db.createObjectStore('todos', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('name', 'name', { unique: false });
+        };
+
+        request.onsuccess = function(event) {
+            const db = event.target.result;
+            const objectStore = getObjectStore(db);
+
+            document.getElementById('addButton').addEventListener('click', function() {
+                const todoInput = document.getElementById('todoInput');
+                const todoName = todoInput.value.trim();
+
+                if (todoName !== '') {
+                    const todo = { name: todoName };
+                    const addRequest = objectStore.add(todo);
+
+                    addRequest.onsuccess = function() {
+                        todoInput.value = '';
+                        displayTodos();
+                    };
+                }
+            });
+
+            document.getElementById('todoInput').addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    document.getElementById('addButton').click();
+                }
+            });
+
+            function getObjectStore(db) {
+                const transaction = db.transaction('todos', 'readwrite');
+                return transaction.objectStore('todos');
+            }
+
+            function displayTodos() {
+                const list = document.getElementById('todoList');
+                list.innerHTML = '';
+
+                const transaction = db.transaction('todos', 'readonly');
+                const objectStore = transaction.objectStore('todos');
+                const getAllRequest = objectStore.getAll();
+
+                getAllRequest.onsuccess = function() {
+                    const todos = getAllRequest.result;
+                    todos.sort((a, b) => a.name.localeCompare(b.name));
+
+                    todos.forEach(function(todo) {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = todo.name;
+                        list.appendChild(listItem);
+                    });
+                };
+            }
+
+            displayTodos();
+        };
+
+        request.onerror = function(event) {
+            console.error('Error opening IndexedDB database:', event.target.error);
+        };
+    </script>
+</body>
+</html>

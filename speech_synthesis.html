@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Synthesis Test</title>
+</head>
+<body>
+    <h1>Speech Synthesis Test</h1>
+
+    <label for="text">Text:</label>
+    <textarea id="text" rows="4" cols="50"></textarea>
+    <br
+    <label for="voices">Voices:</label>
+    <select id="voices"></select>
+    <br>
+    <button id="speakButton">Speak</button>
+
+    <script>
+        // Fetch available voices
+        function fetchVoices() {
+            const voicesSelect = document.getElementById('voices');
+            voicesSelect.innerHTML = '';
+
+            speechSynthesis.getVoices().forEach(voice => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = voice.name;
+                voicesSelect.appendChild(option);
+            });
+        }
+
+        // Speak the text using the selected voice
+        function speakText() {
+            const text = document.getElementById('text').value;
+            const voiceName = document.getElementById('voices').value;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === voiceName);
+
+            speechSynthesis.speak(utterance);
+        }
+
+        // Event listeners
+        window.addEventListener('DOMContentLoaded', fetchVoices);
+        speechSynthesis.addEventListener('voiceschanged', fetchVoices);
+        document.getElementById('speakButton').addEventListener('click', speakText);
+    </script>
+</body>
+</html>

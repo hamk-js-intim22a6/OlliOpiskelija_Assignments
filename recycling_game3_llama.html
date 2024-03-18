@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Recycling Game | Teach Waste Management</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    .gameContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 2rem); /* Subtract header height */
+    }
+
+    #startBtn {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: transparent;
+      border: none;
+      color: blue;
+      cursor: pointer;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    section#trashBinArea {
+      width: 50%;
+      min-height: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    div[data-bin] {
+      float: right;
+      clear: both;
+      margin-top: 1rem;
+      margin-left: 1rem;
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      text-align: center;
+      border: solid 2px black;
+      border-radius: 10px;
+      transition: transform ease-out 0.2s;
+      cursor: move;
+    }
+
+    [draggable='true'] {
+      opacity: 0.5;
+    }
+
+    img[src^="https://via.placeholder"] {
+      filter: grayscale(100%);
+    }
+
+    p#scoreboard {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: larger;
+    }
+
+    @media screen and (max-width: 768px) {
+      .gameContainer {
+        flex-direction: column;
+      }
+
+      section#trashBinArea {
+        order: 1;
+        width: 100%;
+        margin-bottom: 2rem;
+      }
+
+      #startBtn {
+        bottom: 1rem;
+        left: 50%;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+</head>
+
+<body onload="initGame()">
+  <button onclick="reset()" id="startBtn">Start Game</button>
+  <div class="gameContainer">
+    <h1>Drag&Drop Trash Sorting Game</h1>
+    <section id="trashBinArea">
+      <div data-bin="organics" title="Organic Waste Bin">??</div>
+      <div data-bin="paper" title="Paper Bin">???</div>
+      <div data-bin="glass" title="Glass Bin">??</div>
+      <div data-bin="metals" title="Metal Bin">??</div>
+      <div data-bin="plastics" title="Plastic Bin">??</div>
+      <div data-bin="electronics" title="Electronic Waste Bin">??</div>
+      <div data-bin="miscellaneous" title="Misc. Bin">?????</div>
+    </section>
+    <p id="scoreboard">Score: 0 Points</p>
+  </div>
+  <script>
+    let trash = [{
+        "type": "organics",
+        "url": "https://via.placeholder.com/100/?text=Apple+Core"
+      },
+      {
+        "type": "paper",
+        "url": "https://via.placeholder.com/100/?text=Newspaper"
+      },
+      {
+        "type": "glass",
+        "url": "https://via.placeholder.com/100/?text=Wine+Bottle"
+      },
+      {
+        "type": "metals",
+        "url": "https://via.placeholder.com/100/?text=Aluminum+Can"
+      },
+      {
+        "type": "plastics",
+        "url": "https://via.placeholder.com/100/?text=Milk+Carton"
+      },
+      {
+        "type": "electronics",
+        "url": "https://via.placeholder.com/100/?text=Cellphone"
+      },
+      {
+        "type": "miscellaneous",
+        "url": "https://via.placeholder.com/100/?text=Toothpick"
+      }
+    ];
+
+    function initGame() {
+      reset(); // Start fresh each time
+    }
+
+    function shuffleArray(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function createTrashItem(itemData) {
+      const itemElement = document.createElement('IMG');
+      itemElement.setAttribute('class', 'trashItem');
+      itemElement.dataset['correctBin'] = itemData.type;
+      itemElement.addEventListener('click', handleClickEvent);
+      itemElement.setAttribute('draggable', true);
+      itemElement.ondragstart = () => {
+        itemElement.className += ' hold';
+        setTimeout(() => {
+          itemElement.removeAttribute('draggable')
+        });
+      };
+      itemElement.ondrop = event => {
+        if (!event || !event.target) return false;
+        const targetEl = event.target;
+        if (targetEl && targetEl.matches('.dropzone')) {
+          checkAnswer(targetEl, itemElement);
+        } else {
+          alert(`You dropped ${itemElement.alt} outside any container.`);
+        }
+      };
+      itemElement.src = itemData.url;
+      itemElement.alt = `${itemData.type}`;
+      return itemElement;
+    }
+
+    function addItemsToPage(numOfItems) {
+      const itemsList = [];
+      while (itemsList.length <= numOfItems) {
+        const newItem = createTrashItem(shuffleArray(trash)[0]);
+        itemsList.push(newItem);
+      }
+      return itemsList;
+    }
+
+    function populateTrashBins(itemsList) {
+      const trashBinArea = document.getElementById('trashBinArea');
+      trashBinArea.innerHTML = '';
+      itemsList.forEach((el, index) => {
+        trashBinArea.appendChild(el);
+      })
+    }
+
+    function updateScoreBoard(points) {
+      const currentPoints = parseInt(document.querySelector('#scoreboard').innerText.split(' ').pop());
+      const updatedPoints = points ? currentPoints + points : currentPoints;
+      document.querySelector('#scoreboard').innerText = `Score: ${updatedPoints} Points`;
+    }
+
+    function checkAnswer(targetEl, itemEl) {
+      const answerIsCorrect = targetEl.getAttribute('data-bin') === itemEl.dataset['correctBin'];
+      if (answerIsCorrect) {
+        console.info('? Correct Answer!');
+        updateScoreBoard(1);
+        removeFromDOM(itemEl);
+      } else {
+        console.warn('? Wrong Answer!');
+        updateScoreBoard(-1);
+        removeFromDOM(itemEl);
+      }
+    }
+
+    function removeFromDOM(element) {
+      element.parentNode.removeChild(element);
+    }
+
+    function handleClickEvent(evt) {
+      evt.preventDefault();
+      const clickedTarget = evt.currentTarget;
+      if (clickedTarget && clickedTarget.nodeName == 'IMG') {
+        clickedTarget.focus({ preventScroll: true });
+      }
+    }
+
+    function reset() {
+      window.location.reload();
+    }
+
+    populateTrashBins(addItemsToPage(10));
+  </script>
+</body>
+
+</html>

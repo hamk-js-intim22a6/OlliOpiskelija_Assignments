@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Geolocation Tracking</title>
+</head>
+<body>
+  <h1>Geolocation Tracking</h1>
+  <p id="position"></p>
+
+  <script>
+    function updatePosition(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const accuracy = position.coords.accuracy.toFixed(2);
+
+      const positionText = `Latitude: ${latitude}<br>Longitude: ${longitude}<br>Accuracy: ${accuracy} meters`;
+
+      document.getElementById("position").innerHTML = positionText;
+    }
+
+    function errorHandler(error) {
+      document.getElementById("position").innerHTML = `Error: ${error.message}`;
+    }
+
+    function trackPosition() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(updatePosition, errorHandler, { enableHighAccuracy: true });
+      } else {
+        document.getElementById("position").innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    setInterval(trackPosition, 1000);
+  </script>
+</body>
+</html>

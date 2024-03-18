@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Worker Example</title>
+</head>
+<body>
+  <script>
+    // Create a new Web Worker
+    const worker = new Worker('worker.js');
+    console.log("Starting worker.js");
+    // Listen for messages from the Web Worker
+    worker.onmessage = function(event) {
+      console.log('Factorial:', event.data);
+    };
+
+    // Send a message to the Web Worker
+    worker.postMessage(19);
+  </script>
+</body>
+</html>

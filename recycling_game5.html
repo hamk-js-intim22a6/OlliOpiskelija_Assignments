@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recycling Game</title>
+<style>
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+  .bin { width: 100px; height: 150px; margin: 10px; background-color: #ddd; text-align: center; padding-top: 130px; position: relative; }
+  .object { padding: 5px; margin: 5px; background-color: lightgrey; cursor: grab; user-select: none; }
+  #objects { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+  #bins { display: flex; justify-content: center; flex-wrap: wrap; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<h2>Recycling Game</h2>
+<button id="startButton">Start</button>
+<div id="objects" class="hidden"></div>
+<div id="bins" class="hidden">
+  <div class="bin" data-type="Organic">Organic</div>
+  <div class="bin" data-type="Paper">Paper</div>
+  <div class="bin" data-type="Glass">Glass</div>
+  <div class="bin" data-type="Metal">Metal</div>
+  <div class="bin" data-type="Plastic">Plastic</div>
+  <div class="bin" data-type="Electronic">Electronic</div>
+  <div class="bin" data-type="Miscellaneous">Miscellaneous</div>
+</div>
+<div id="scoreBoard" class="hidden">Score: <span id="score">0</span></div>
+<button id="replayButton" class="hidden">Replay</button>
+
+<script>
+document.getElementById('startButton').addEventListener('click', startGame);
+document.getElementById('replayButton').addEventListener('click', startGame);
+
+const objects = [
+  { name: 'Banana Peel', type: 'Organic' },
+  { name: 'Newspaper', type: 'Paper' },
+  { name: 'Wine Bottle', type: 'Glass' },
+  { name: 'Soda Can', type: 'Metal' },
+  { name: 'Water Bottle', type: 'Plastic' },
+  { name: 'Old Phone', type: 'Electronic' },
+  { name: 'Pizza Box', type: 'Paper' },
+  { name: 'Jar of Jam', type: 'Glass' },
+  { name: 'Tin Can', type: 'Metal' },
+  { name: 'Shampoo Bottle', type: 'Plastic' },
+  { name: 'Apple Core', type: 'Organic' },
+  { name: 'Magazine', type: 'Paper' },
+  { name: 'Beer Bottle', type: 'Glass' },
+  { name: 'Foil', type: 'Metal' },
+  { name: 'Plastic Bag', type: 'Plastic' },
+  { name: 'Broken Toaster', type: 'Electronic' },
+  { name: 'Cardboard', type: 'Paper' },
+  { name: 'Glass Jar', type: 'Glass' },
+  { name: 'Iron Scrap', type: 'Metal' },
+  { name: 'Plastic Toy', type: 'Plastic' },
+  { name: 'Vegetable Scraps', type: 'Organic' },
+  { name: 'Book', type: 'Paper' },
+  { name: 'Perfume Bottle', type: 'Glass' },
+  { name: 'Aluminum Foil', type: 'Metal' },
+  { name: 'CD Case', type: 'Plastic' },
+  { name: 'Laptop Battery', type: 'Electronic' },
+  { name: 'Egg Carton', type: 'Paper' },
+  { name: 'Mirror', type: 'Glass' },
+  { name: 'Copper Wire', type: 'Metal' },
+  { name: 'Disposable Cup', type: 'Plastic' }
+];
+
+let score = 0;
+
+function startGame() {
+  document.getElementById('startButton').classList.add('hidden');
+  document.getElementById('scoreBoard').classList.remove('hidden');
+  document.getElementById('replayButton').classList.add('hidden');
+  document.getElementById('bins').classList.remove('hidden');
+  document.getElementById('objects').classList.remove('hidden');
+  document.getElementById('objects').innerHTML = '';
+  score = 0;
+  document.getElementById('score').textContent = score;
+  const shuffled = objects.sort(() => 0.5 - Math.random());
+  let selected = shuffled.slice(0, 10);
+  selected.forEach(obj => {
+    let div = document.createElement('div');
+    div.textContent = obj.name;
+    div.className = 'object';
+    div.setAttribute('draggable', true);
+    div.setAttribute('data-type', obj.type);
+    div.addEventListener('dragstart', dragStart);
+    document.getElementById('objects').appendChild(div);
+  });
+
+  const bins = document.querySelectorAll('.bin');
+  bins.forEach(bin => {
+    bin.addEventListener('dragover', dragOver);
+    bin.addEventListener('drop', drop);
+  });
+}
+
+function dragStart(event) {
+  event.dataTransfer.setData('type', event.target.getAttribute('data-type'));
+  event.dataTransfer.setData('name', event.target.textContent);
+}
+
+function dragOver(event) {
+  event.preventDefault();
+}
+
+function drop(event) {
+  event.preventDefault();
+  const objectType = event.dataTransfer.getData('type');
+  const objectName = event.dataTransfer.getData('name');
+  const binType = event.target.getAttribute('data-type');
+  if (objectType === binType) {
+    score++;
+  } else {
+    score--;
+  }
+  document.getElementById('score').textContent = score;
+  document.querySelector(`[data-type="${objectType}"][textContent="${objectName}"]`).remove();
+  if (document.getElementById('objects').children.length === 0) {
+    endGame();
+  }
+}
+
+function endGame() {
+  document.getElementById('bins').classList.add('hidden');
+  document.getElementById('replayButton').classList.remove('hidden');
+}
+
+</script>
+</body>
+</html>
+

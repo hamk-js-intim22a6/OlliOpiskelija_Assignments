@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Optimized Page</title>
+</head>
+<body>
+    <h1>Welcome to my mobile optimized page!</h1>
+    <script>
+    // vanha tyyli #2 (muistuttaa jo enemmän luokkapohjaista ohjelmointia)
+    function Account(balance) {
+        this.balance = balance;
+        this.deposit = function (amount) {
+            this.balance += amount;
+        }
+        this.draw = function (amount) {
+            this.balance -= amount;
+        }
+    }
+    let jacksAccount = new Account(100); // 1 euro
+    jacksAccount.deposit(50); // 50 cents
+    console.log(jacksAccount.balance);
+    jacksAccount.draw(90); // 90 cents
+    console.log(jacksAccount.balance);
+    </script>
+</body>
+</html>

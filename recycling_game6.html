@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recycling Game</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .game-container, .score-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 600px;
+  }
+  .bin, .item {
+    margin: 10px;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    min-width: 100px;
+    cursor: grab;
+  }
+  .bin {
+    background-color: #f0f0f0;
+  }
+  .item {
+    background-color: #cdf;
+    cursor: pointer;
+  }
+  .start-button, .replay-button {
+    margin: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .score-display {
+    margin-top: 20px;
+    font-size: 20px;
+  }
+</style>
+</head>
+<body>
+<button class="start-button">Start</button>
+<div class="game-container"></div>
+<div class="score-container"></div>
+
+<script>
+  const bins = ['Organic waste', 'Paper', 'Glass', 'Metal', 'Plastic', 'Electronic waste', 'Miscellaneous'];
+  const items = ['Banana Peel', 'Newspaper', 'Bottle', 'Can', 'Plastic Bag', 'Old Phone', 'Cigarette Butts', 'Apple Core', 'Magazine', 'Jar', 'Screw', 'Bottle Cap', 'Shopping Bag', 'Keyboard', 'Paper Cup', 'Leaf', 'Book', 'Glass Cup', 'Foil', 'Straw', 'Mouse', 'Pizza Box', 'Egg Carton', 'Wine Bottle', 'Soda Can', 'Yogurt Container', 'Laptop', 'Tissue', 'Plate', 'Charger'];
+  const itemTypes = ['Organic waste', 'Paper', 'Glass', 'Metal', 'Plastic', 'Electronic waste', 'Miscellaneous'];
+  const itemTypeMapping = {'Banana Peel': 0, 'Newspaper': 1, 'Bottle': 2, 'Can': 3, 'Plastic Bag': 4, 'Old Phone': 5, 'Cigarette Butts': 6, 'Apple Core': 0, 'Magazine': 1, 'Jar': 2, 'Screw': 3, 'Bottle Cap': 3, 'Shopping Bag': 4, 'Keyboard': 5, 'Paper Cup': 1, 'Leaf': 0, 'Book': 1, 'Glass Cup': 2, 'Foil': 3, 'Straw': 4, 'Mouse': 5, 'Pizza Box': 1, 'Egg Carton': 1, 'Wine Bottle': 2, 'Soda Can': 3, 'Yogurt Container': 4, 'Laptop': 5, 'Tissue': 1, 'Plate': 6, 'Charger': 5};
+  let score = 0;
+
+  document.querySelector('.start-button').addEventListener('click', startGame);
+
+  function startGame() {
+    document.querySelector('.game-container').innerHTML = '';
+    document.querySelector('.score-container').innerHTML = '';
+    score = 0;
+
+    bins.forEach(bin => {
+      const binElement = document.createElement('div');
+      binElement.classList.add('bin');
+      binElement.textContent = bin;
+      binElement.setAttribute('data-type', bin);
+      binElement.addEventListener('dragover', e => e.preventDefault());
+      binElement.addEventListener('drop', handleDrop);
+      document.querySelector('.game-container').appendChild(binElement);
+    });
+
+    const selectedItems = [];
+    while (selectedItems.length < 10) {
+      const itemIndex = Math.floor(Math.random() * items.length);
+      if (!selectedItems.includes(itemIndex)) {
+        selectedItems.push(itemIndex);
+        const itemElement = document.createElement('div');
+        itemElement.classList.add('item');
+        itemElement.textContent = items[itemIndex];
+        itemElement.setAttribute('draggable', true);
+        itemElement.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text', e.target.textContent);
+        });
+        document.querySelector('.game-container').appendChild(itemElement);
+      }
+    }
+  }
+
+  function handleDrop(e) {
+    const itemType = e.dataTransfer.getData('text');
+    const binType = e.target.getAttribute('data-type');
+    if (itemTypes[itemTypeMapping[itemType]] === binType) {
+      score++;
+    } else {
+      score--;
+    }
+    updateScoreDisplay();
+    document.querySelectorAll('.item').forEach(item => {
+      if (item.textContent === itemType) {
+        item.parentNode.removeChild(item);
+      }
+    });
+    checkGameEnd();
+  }
+
+  function updateScoreDisplay() {
+    const scoreDisplay = document.querySelector('.score-display');
+    if (scoreDisplay) {
+      scoreDisplay.textContent = `Score: ${score}`;
+    } else {
+      const newScoreDisplay = document.createElement('div');
+      newScoreDisplay.classList.add('score-display');
+      newScoreDisplay.textContent = `Score: ${score}`;
+      document.querySelector('.score-container').appendChild(newScoreDisplay);
+    }
+  }
+
+  function checkGameEnd() {
+    if (document.querySelectorAll('.item').length === 0) {
+      const replayButton = document.createElement('button');
+      replayButton.textContent = 'Replay';
+      replayButton.classList.add('replay-button');
+      replayButton.onclick = () => window.location.reload();
+      document.querySelector('.score-container').innerHTML = `Game Over! Your score is: ${score}`;
+      document.querySelector('.score-container').appendChild(replayButton);
+    }
+  }
+</script>
+</body>
+</html>
+

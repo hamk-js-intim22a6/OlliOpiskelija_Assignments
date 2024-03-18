@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+    <script>
+        function validate(event) {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            console.log(username);
+            console.log(password);
+            if (username == "admin" && password == "admin") {
+                alert("Login successful");
+            } else {
+                alert("Login failed");
+            }
+            event.preventDefault();
+            return false;
+        }
+    </script>
+</head>
+<body>
+    <h2>Login</h2>
+    <form onsubmit="validate(event)">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" pattern="[A-Za-z0-9]{8,20}" required>
+        <small>Password should consist of 8-20 alphanumeric characters.</small><br><br>
+        
+        <input type="submit" value="Login">
+    </form>
+    <script>
+        let password = document.getElementById('password');
+        password.oninvalid = function(event) {
+            event.target.setCustomValidity('Password should only contain minimum 8 and max 20 characters: a-z, A-Z and _');
+        }        
+    </script>
+</body>
+</html>

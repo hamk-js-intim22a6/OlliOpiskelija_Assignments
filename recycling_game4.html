@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recycling Game</title>
+<style>
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+  .bin { border: 2px solid #000; margin: 10px; padding: 20px; width: 140px; height: 100px; text-align: center; cursor: pointer; background-color: lightgrey; }
+  .object { margin: 5px; padding: 10px; background-color: #f0f0f0; cursor: grab; border: 1px solid #ddd; }
+  .footer { margin-top: 20px; }
+  #startButton { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  @media (max-width: 600px) {
+    .bins, .objects { flex-direction: column; }
+    .bin, .object { width: 90%; }
+  }
+</style>
+</head>
+<body>
+<h2>Recycle Right Game</h2>
+<div id="objects" class="objects"></div>
+<div id="bins" class="bins" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+<div class="footer">
+  <button id="startButton">Start</button> <span id="score">Score: 0</span>
+  <button id="replayButton" style="display:none;">Replay</button>
+</div>
+
+<script>
+const binTypes = ["Organic Waste", "Paper", "Glass", "Metal", "Plastic", "Electronic Waste", "Miscellaneous"];
+const objectsList = [
+  {name: "Banana Peel", type: "Organic Waste"}, {name: "Newspaper", type: "Paper"}, {name: "Glass Bottle", type: "Glass"},
+  {name: "Aluminum Can", type: "Metal"}, {name: "Plastic Bag", type: "Plastic"}, {name: "Old Smartphone", type: "Electronic Waste"},
+  {name: "Pizza Box", type: "Paper"}, {name: "Wine Bottle", type: "Glass"}, {name: "Tin Can", type: "Metal"},
+  {name: "Water Bottle", type: "Plastic"}, {name: "Broken Keyboard", type: "Electronic Waste"}, {name: "Takeout Containers", type: "Miscellaneous"},
+  {name: "Magazine", type: "Paper"}, {name: "Jar", type: "Glass"}, {name: "Screw", type: "Metal"},
+  {name: "Shampoo Bottle", type: "Plastic"}, {name: "Used Battery", type: "Electronic Waste"}, {name: "Coffee Cup", type: "Miscellaneous"},
+  // Add more objects to reach 30
+];
+let score = 0;
+
+document.getElementById('startButton').addEventListener('click', startGame);
+document.getElementById('replayButton').addEventListener('click', startGame);
+
+function startGame() {
+  document.getElementById('objects').innerHTML = '';
+  document.getElementById('bins').innerHTML = '';
+  document.getElementById('replayButton').style.display = 'none';
+  score = 0;
+  updateScore(0);
+
+  binTypes.forEach(type => {
+    let bin = document.createElement('div');
+    bin.className = 'bin';
+    bin.textContent = type;
+    bin.setAttribute('data-type', type);
+    bin.ondragover = (event) => event.preventDefault();
+    bin.ondrop = handleDrop;
+    document.getElementById('bins').appendChild(bin);
+  });
+
+  let selectedObjects = objectsList.sort(() => 0.5 - Math.random()).slice(0, 10);
+  selectedObjects.forEach(obj => {
+    let objectElement = document.createElement('div');
+    objectElement.className = 'object';
+    objectElement.textContent = obj.name;
+    objectElement.draggable = true;
+    objectElement.setAttribute('data-type', obj.type);
+    objectElement.ondragstart = (event) => {
+      event.dataTransfer.setData('text', event.target.getAttribute('data-type'));
+      event.dataTransfer.setData('obj', event.target.textContent);
+    };
+    document.getElementById('objects').appendChild(objectElement);
+  });
+}
+
+function handleDrop(event) {
+  event.preventDefault();
+  let droppedType = event.dataTransfer.getData('text');
+  let objectName = event.dataTransfer.getData('obj');
+  let targetType = event.target.getAttribute('data-type');
+
+  if (droppedType === targetType) {
+    score++;
+  } else {
+    score--;
+  }
+
+  document.querySelector(`[data-type="${droppedType}"][textContent="${objectName}"]`).remove();
+  updateScore(score);
+
+  if (!document.getElementById('objects').hasChildNodes()) {
+    document.getElementById('replayButton').style.display = 'inline';
+  }
+}
+
+function updateScore(newScore) {
+  document.getElementById('score').textContent = 'Score: ' + newScore;
+}
+</script>
+</body>
+</html>
+

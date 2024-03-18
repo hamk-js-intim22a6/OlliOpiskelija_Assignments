@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recycling Rush!</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 80%;
+    }
+
+    .waste {
+      width: 100px;
+      height: 100px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin: 10px;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .waste img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .bin {
+      width: 150px;
+      height: 150px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin: 10px;
+      text-align: center;
+      padding: 10px;
+      background-color: #eee;
+    }
+
+    .bin h3 {
+      margin-bottom: 0;
+    }
+
+    #score {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+
+    #start {
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #replay {
+      display: none;
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    @media only screen and (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .waste, .bin {
+        width: 50%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Recycling Rush!</h1>
+  <div id="container" class="container"></div>
+  <p id="score"></p>
+  <button id="start">Start Game</button>
+  <button id="replay" onclick="startGame()">Replay</button>
+
+  <script>
+    const objects = [
+      "apple core", "banana peel", "coffee grounds", "eggshells", "food scraps",
+      "newspaper", "cardboard boxes", "paper bags", "envelopes", "magazines",
+      "glass bottles", "jars", "drinking glasses", "window panes", "mirrors",
+      "aluminum cans", "foil", "metal lids", "cutlery", "cooking pots",
+      "water bottles", "plastic containers", "shopping bags", "straws", "toys",
+      "batteries", "light bulbs", "electronics", "printers", "cell phones",
+      "used tissues", "diapers", "cigarette butts", "chewing gum", "bandaids"
+    ];
+
+    const bins = {
+      "Organic Waste": ["apple core", "banana peel", "coffee grounds", "eggshells", "food scraps"],
+      "Paper": ["newspaper", "cardboard boxes", "paper bags", "envelopes", "magazines"],
+      "Glass": ["glass bottles", "jars", "drinking glasses", "window panes", "mirrors"],
+      "Metal": ["aluminum cans", "foil", "metal lids", "cutlery", "cooking pots"],
+      "Plastic": ["water bottles", "plastic containers", "shopping bags", "straws", "toys"],
+      "Electronic waste": ["batteries", "light bulbs", "electronics", "printers", "cell phones"],
+      "Miscellaneous": ["used tissues", "diapers", "cigarette butts", "chewing gum", "bandaids"]
+    };
+
+    let score = 0;
+    let playing = false;
+    function startGame() {
+      if (playing) return;
+      playing = true;
+      score = 0;
+      document.getElementById("score").innerHTML = `Score: ${score}`;
+      document.getElementById("start").style.display = "none";
+      document.getElementById("replay").style.display = "none";
+
+      const chosenObjects = shuffle(objects).slice(0, 10);
+      const container = document.getElementById("container");
+      container.innerHTML = ""; // Clear container
+
+      chosenObjects.forEach(object => {
+        const waste = document.createElement("div");
+        waste.classList.add("waste");
+        waste.draggable = true;
+        waste.textContent = object;
+        container.appendChild(waste);
+        waste.addEventListener("dragstart", dragStart);
+      });
+
+      for (const binName in bins) {
+        const bin = document.createElement("div");
+        bin.classList.add("bin");
+        bin.addEventListener("dragover", dragOver);
+        bin.addEventListener("drop", drop);
+        bin.innerHTML = `<h3>${binName}</h3>`;
+        container.appendChild(bin);
+      }
+    }
+
+    function shuffle(array) {
+      const shuffled = array.slice(0); // Copy array
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    function dragStart(event) {
+      event.dataTransfer.setData("text/plain", event.target.textContent);
+    }
+
+    function dragOver(event) {
+      event.preventDefault(); // Allow drop
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      const object = event.dataTransfer.getData("text/plain");
+      const bin = event.target;
+
+      if (bins[bin.textContent].includes(object)) {
+        score++;
+      } else {
+        score--;
+      }
+
+      document.getElementById("score").innerHTML = `Score: ${score}`;
+
+      // Remove the waste visually, but keep it in the DOM with "hidden" class
+      event.target.parentNode.removeChild(event.target);
+      //event.target.classList.add("hidden");
+
+      if (document.getElementById("container").getElementsByClassName("waste").length === 0) {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      playing = false;
+      document.getElementById("start").style.display = "block";
+      document.getElementById("replay").style.display = "inline-block";
+
+      // Show all hidden waste elements again
+      const hiddenWastes = document.getElementsByClassName("hidden");
+      for (let i = 0; i < hiddenWastes.length; i++) {
+        hiddenWastes[i].classList.remove("hidden");
+      }
+    }
+
+    startGame(); // Start game automatically
+
+  </script>
+</body>
+</html>

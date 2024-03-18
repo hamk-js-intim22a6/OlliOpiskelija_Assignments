@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        // Create a new React component for the TODO app
+        class TodoApp extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    tasks: [],
+                    newTask: ""
+                };
+            }
+
+            // Handle input change in the text field
+            handleInputChange = (event) => {
+                this.setState({ newTask: event.target.value });
+            }
+
+            // Handle button click or enter key press to add a new task
+            handleAddTask = (event) => {
+                if (event.key === "Enter" || event.type === "click") {
+                    const { tasks, newTask } = this.state;
+                    if (newTask.trim() !== "") {
+                        this.setState({
+                            tasks: [...tasks, newTask],
+                            newTask: ""
+                        });
+                    }
+                }
+            }
+
+            render() {
+                const { tasks, newTask } = this.state;
+
+                return React.createElement("div", null,
+                    React.createElement("input", { type: "text", value: newTask, onChange: this.handleInputChange, onKeyPress: this.handleAddTask }),
+                    React.createElement("button", { onClick: this.handleAddTask }, "Add Task"),
+                    React.createElement("ul", null,
+                        tasks.map((task, index) => React.createElement("li", { key: index }, task))
+                    )
+                );
+            }
+        }
+
+        // Render the TodoApp component to the DOM
+        ReactDOM.render(
+            React.createElement(TodoApp, null),
+            document.getElementById("root")
+        );
+    </script>
+</body>
+</html>

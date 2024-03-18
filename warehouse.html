@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory system</title>
+    <script>
+        var inventory = {};  // empty inventory
+        function addInventory(item) {
+            if (item.name in inventory) {
+                inventory[item.name].amount += item.amount;  // update item amount
+            } else {
+                inventory[item.name] = item;  // new item
+            }
+        }
+        function removeInventory(name) {
+            delete inventory[name];
+        }
+        function escapeHTML(html) { // prevent XSS
+            return html.replaceAll(/&/g, "&amp;").replaceAll(/</g, "&lt;").replaceAll(/>/g, "&gt;").replaceAll(/"/g, "&quot;").replaceAll(/'/g, "&apos;");
+        }
+        function sanitizeStringUsingInnerText(str) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerText = str;
+            return tempDiv.innerHTML;
+        }          
+        function remove(event, name) {
+            name = unescape(name); // prevent XSS
+            if (name in inventory) {
+                removeInventory(name);
+            }
+            displayInventory();
+        }
+        function add(event) {
+            let name = document.getElementById("id_name").value;
+            let price = parseInt(document.getElementById("id_price").value);
+            let amount = parseInt(document.getElementById("id_amount").value);
+            if (name.length > 0 && !isNaN(price) && !isNaN(amount)) {
+                let item = {name, price, amount};
+                addInventory(item);
+            }
+            displayInventory(); 
+        }
+        function displayInventory() {
+            let s = "<table border='1'><tr><th>Name<th>Price<th>Amount<th>Remove";
+            for(let [name, item] of Object.entries(inventory)) {
+                console.log(name, item);
+                s += `<tr><td>${escapeHTML(item.name)}<td>${item.price}<td>${item.amount}`
+                s += `<td><input type="button" value="Remove" onclick="remove(event, '${escape(name)}')">`;
+            }
+            s += "</table>";
+            //console.log(s);
+            document.getElementById("id_result").innerHTML = s;
+        }
+    </script>
+</head>
+<body>
+    <form>
+        <label for="id_name">Name:</label>
+        <input type="text" id="id_name" size="40">
+        <label for="id_price">Price:</label>
+        <input type="number" min="0" id="id_price">
+        <label for="id_amount">Amount:</label>
+        <input type="number" id="id_amount">
+        <input type="button" value="Add/Change" onclick="add(event)">
+        <hr>
+        <output id="id_result"></output>
+    </form>    
+</body>
+</html>

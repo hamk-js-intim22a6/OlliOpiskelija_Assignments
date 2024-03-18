@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech Recognition Test</title>
+</head>
+<body>
+  <button id="recordButton">Record</button>
+  <textarea id="outputTextArea" rows="5" cols="50"></textarea>
+
+  <script>
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (window.SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      const recordButton = document.getElementById('recordButton');
+      const outputTextArea = document.getElementById('outputTextArea');
+
+      recordButton.addEventListener('click', () => {
+        recognition.start();
+      });
+
+      recognition.addEventListener('result', (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join('');
+
+        outputTextArea.value = transcript;
+      });
+
+      recognition.addEventListener('end', () => {
+        recordButton.disabled = false;
+      });
+    } else {
+      outputTextArea.value = 'Speech recognition is not supported in this browser.';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recycling Game</title>
+<style>
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+  .bin { border: 2px solid #000; margin: 10px; padding: 20px; width: 140px; height: 100px; text-align: center; cursor: pointer; }
+  .object { margin: 5px; padding: 10px; background-color: #f0f0f0; cursor: grab; border: 1px solid #ddd; }
+  .footer { margin-top: 20px; }
+  #startButton { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  @media (max-width: 600px) {
+    .bins, .objects { flex-direction: column; }
+    .bin { width: auto; }
+  }
+</style>
+</head>
+<body>
+<h2>Recycle Right Game</h2>
+<div id="objects" class="objects"></div>
+<div id="bins" class="bins" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+<div class="footer">
+  <button id="startButton">Start</button> <span id="score">Score: 0</span>
+</div>
+
+<script>
+document.getElementById('startButton').addEventListener('click', startGame);
+const bins = ["Organic Waste", "Paper", "Glass", "Metal", "Plastic", "Electronic Waste", "Miscellaneous"];
+const objects = [
+  {name: "Banana Peel", bin: "Organic Waste"}, {name: "Apple Core", bin: "Organic Waste"}, {name: "Lettuce Leaf", bin: "Organic Waste"},
+  {name: "Newspaper", bin: "Paper"}, {name: "Magazine", bin: "Paper"}, {name: "Cardboard Box", bin: "Paper"},
+  {name: "Wine Bottle", bin: "Glass"}, {name: "Beer Bottle", bin: "Glass"}, {name: "Glass Jar", bin: "Glass"},
+  {name: "Soda Can", bin: "Metal"}, {name: "Tin Can", bin: "Metal"}, {name: "Aluminum Foil", bin: "Metal"},
+  {name: "Plastic Bottle", bin: "Plastic"}, {name: "Plastic Bag", bin: "Plastic"}, {name: "Plastic Utensils", bin: "Plastic"},
+  {name: "Old Phone", bin: "Electronic Waste"}, {name: "Used Battery", bin: "Electronic Waste"}, {name: "Broken Charger", bin: "Electronic Waste"},
+  // Add additional objects to reach 30 in a similar pattern
+  {name: "Pizza Box", bin: "Paper"}, {name: "Tea Bag", bin: "Organic Waste"}, {name: "Worn-Out Shoes", bin: "Miscellaneous"},
+  {name: "Light Bulb", bin: "Miscellaneous"}, {name: "CDs", bin: "Electronic Waste"}, {name: "Takeout Containers", bin: "Plastic"},
+  {name: "Paint Can", bin: "Miscellaneous"}, {name: "Pesticide Container", bin: "Miscellaneous"}, {name: "Shopping Bag", bin: "Plastic"},
+  {name: "Toothpaste Tube", bin: "Miscellaneous"}
+];
+let score = 0;
+
+function startGame() {
+  document.getElementById('objects').innerHTML = '';
+  document.getElementById('bins').innerHTML = '';
+  score = 0;
+  updateScore(0);
+
+  bins.forEach(function(bin) {
+    const binElement = document.createElement('div');
+    binElement.textContent = bin;
+    binElement.className = 'bin';
+    binElement.addEventListener('dragover', function(e) {
+      e.preventDefault();
+    });
+    binElement.addEventListener('drop', function(e) {
+      e.preventDefault();
+      const objectName = e.dataTransfer.getData('text');
+      const object = document.querySelector(`[data-name="${objectName}"]`);
+      if (object && object.getAttribute('data-bin') === bin) {
+        score++;
+        updateScore(score);
+        object.remove();
+      }
+    });
+    document.getElementById('bins').appendChild(binElement);
+  });
+
+  const shuffledObjects = objects.sort(() => 0.5 - Math.random()).slice(0, 10);
+  shuffledObjects.forEach(function(obj) {
+    const objectElement = document.createElement('div');
+    objectElement.textContent = obj.name;
+    objectElement.className = 'object';
+    objectElement.setAttribute('draggable', true);
+    objectElement.setAttribute('data-name', obj.name);
+    objectElement.setAttribute('data-bin', obj.bin);
+    objectElement.addEventListener('dragstart', function(e) {
+      e.dataTransfer.setData('text', obj.name);
+    });
+    document.getElementById('objects').appendChild(objectElement);
+  });
+}
+
+function updateScore(newScore) {
+  document.getElementById('score').textContent = 'Score: ' + newScore;
+}
+</script>
+</body>
+</html>
+

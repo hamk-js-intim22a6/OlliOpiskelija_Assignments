@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My HTML5 Page</title>
+</head>
+<body>
+    <script>
+    let object1 = {name: "Jack", age:25};
+    let object2 = {hobby: "gaming"};
+    // object2 "inherits" from object1 or object2 --> object1
+    Object.setPrototypeOf(object2, object1);
+    console.log(object2.name, object2.age, object2.hobby);
+    // child --> parent --> grandparent
+    let object3 = Object.create(object2); // object3 --> object2 --> object1
+    object3.address = "Baker Street";
+    console.log(object3.name, object3.age, object3.address);
+    let proto = Object.getPrototypeOf(object3);
+    console.log(proto); // object1
+    console.log("Object3 has address", object3.hasOwnProperty('address')); // true, because own
+    console.log("Object3 has name", object3.hasOwnProperty('name')); // false because inherited
+    console.log("Object2 own properties", Object.getOwnPropertyNames(object2));
+    for(let property in object3)
+        console.log(property, object3[property]); // hobby, name, age, address
+    </script>
+</body>
+</html>

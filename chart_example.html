@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sin Curve Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="sinChart"></canvas>
+
+    <script>
+        // Get the canvas element
+        const canvas = document.getElementById('sinChart');
+
+        // Create a new chart
+        const chart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Sin Curve',
+                    data: [],
+                    borderColor: 'blue',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'X-axis'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Y-axis'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Generate data for the sin curve
+        const data = [];
+        for (let x = 0; x <= 2 * Math.PI; x += 0.1) {
+            data.push({
+                x: x,
+                y: Math.sin(x)
+            });
+        }
+
+        // Update the chart with the generated data
+        chart.data.labels = data.map(point => point.x.toFixed(2));
+        chart.data.datasets[0].data = data;
+        chart.update();
+    </script>
+</body>
+</html>
